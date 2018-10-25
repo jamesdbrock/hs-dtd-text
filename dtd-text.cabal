@@ -1,5 +1,5 @@
 name: dtd-text
-version: 0.1.2.0
+version: 0.2.0.0
 synopsis: Parse and render XML DTDs
 description:
   This library provides means to parse XML Document Type Declaration (DTD) documents.
@@ -17,12 +17,12 @@ homepage: http://github.com/m15k/hs-dtd-text
 
 library
   build-depends:
-      base >=3 && < 5
+      base
     , containers
-    , text >= 0.8
-    , dtd-types >= 0.3.0.1 && < 1
-    , xml-types ==0.3.*
-    , attoparsec >=0.10.0
+    , text
+    , dtd-types >= 0.4.0.0
+    , xml-types
+    , attoparsec
 
   exposed-modules:
     Data.XML.DTD.Parse

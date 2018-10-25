@@ -59,14 +59,14 @@ module Data.XML.DTD.Parse
   , name
   , nameSS
   , quoted
-  ) 
+  )
   where
 
 import Data.XML.DTD.Types
 import Data.XML.Types (ExternalID(PublicID, SystemID),
   Instruction(Instruction))
 import Data.Attoparsec.Text (Parser, try, satisfy, takeTill,
-  anyChar, char, digit)
+  anyChar, char, digit, inClass)
 import qualified Data.Attoparsec.Text as A -- for takeWhile
 import Data.Attoparsec.Text.Lazy (parse, Result(Done, Fail), maybeResult)
 import Data.Attoparsec.Combinator (many', manyTill, choice, sepBy1)
@@ -173,7 +173,7 @@ markup = mkMarkup <$>
     manyTillS ((:) . MTQuoted <$> try quoted <*> unquoted) ">"
   where
     unquoted = chunk2 <$> unqText <*> many' (list2 <$> pct <*> unqText)
-    unqText = MTUnquoted <$> takeTill (`elem` "%>'\"")
+    unqText = MTUnquoted <$> takeTill (inClass "%>'\"")
     pct = "%" .*> (MTUnquoted <$> (ws *> pure "% ") <|>
                    MTPERef <$> takeTill (== ';') <*. ";")
     mkMarkup ts tss = wrap . concat $ ts : tss
@@ -342,7 +342,7 @@ entityDecl = "<!ENTITY" .*> ws *> skipWS *>
 name :: Parser Text
 name = nonNull $ takeTill notNameChar
   where
-    notNameChar c = isSpace c || c `elem` syntaxChars
+    notNameChar c = isSpace c || inClass syntaxChars c
     syntaxChars = "()[]<>!%&;'\"?*+|,="
     nonNull parser = do
       text <- parser
@@ -489,7 +489,7 @@ comment = "<!--" .*> (T.concat . concat <$> manyTillS chunk "--") <*. ">"
 
 -- | Definition of white space characters, from the XML specification.
 isXMLSpace :: Char -> Bool
-isXMLSpace = (`elem` "\x20\x9\xD\xA")
+isXMLSpace = inClass "\x20\x9\xD\xA"
 
 -- | Parse one character of white space.
 ws :: Parser Char

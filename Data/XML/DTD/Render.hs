@@ -60,7 +60,7 @@ module Data.XML.DTD.Render
   , quote
   , pbracket
   , parens
-  ) 
+  )
   where
 
 import Data.XML.DTD.Types
@@ -70,9 +70,6 @@ import Data.Text.Lazy.Builder (Builder, fromText, singleton)
 import Data.Monoid (Monoid(..))
 import Data.List (intersperse)
 import System.IO (nativeNewline, Newline(CRLF))
-
--- Inline Builder combinator
-(<>) = mappend
 
 -- | Build an optional item.
 buildMaybe :: (a -> Builder) -> Maybe a -> Builder
